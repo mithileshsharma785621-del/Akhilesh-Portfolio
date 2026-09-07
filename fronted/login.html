@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Akhilesh Portfolio</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #06111f;
+            color: white;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            width: 410px;
+            background: #0d1d32;
+
+            padding: 50px 30px 40px;
+
+            border-radius: 18px;
+
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4dd9ff;
+
+            margin-bottom: 35px;
+
+            font-size: 32px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-bottom: 20px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-top: 5px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #4dd9ff;
+
+            color: #00111c;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #message {
+            text-align: center;
+
+            margin-top: 20px;
+
+            min-height: 20px;
+
+            color: #4dd9ff;
+        }
+
+        .links {
+            text-align: center;
+
+            margin-top: 25px;
+
+            line-height: 2;
+        }
+
+        a {
+            color: #4dd9ff;
+
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="login-box">
+
+        <h1>Welcome Back</h1>
+
+
+        <form id="loginForm">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+            >
+
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+            >
+
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+
+        <div id="message"></div>
+
+
+        <div class="links">
+
+            Don't have an account?
+
+            <a href="register.html">
+                Register
+            </a>
+
+            <br>
+
+            <a href="index.html">
+                ← Back to Portfolio
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const loginForm = document.getElementById("loginForm");
+
+        const message = document.getElementById("message");
+
+
+        loginForm.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+
+            const email =
+                document.getElementById("email").value;
+
+            const password =
+                document.getElementById("password").value;
+
+
+            message.textContent = "Logging in...";
+
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:5000/api/login",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    }
+                );
+
+
+                const data = await response.json();
+
+
+                if (response.ok) {
+
+                    message.textContent =
+                        "Login successful!";
+
+
+                    // Save logged-in user
+                    localStorage.setItem(
+                        "loggedInUser",
+                        JSON.stringify(data.user)
+                    );
+
+
+                    // Go back to portfolio
+                    setTimeout(function() {
+
+                        window.location.href = "index.html";
+
+                    }, 1000);
+
+
+                } else {
+
+                    message.textContent =
+                        data.message || "Login failed.";
+
+                }
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                message.textContent =
+                    "Cannot connect to server.";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
